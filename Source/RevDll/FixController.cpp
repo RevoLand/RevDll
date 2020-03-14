@@ -12,6 +12,12 @@ void FixController::initialize()
 	disable_fix();
 	ip();
 	gold_limits();
+
+	party();
+	academy();
+	guild();
+	unique();
+
 	ctf();
 	arena_rewards();
 	job();
@@ -21,6 +27,7 @@ void FixController::level_cap()
 {
 	try
 	{
+		std::cout << "======================== [Level Cap] ========================" << std::endl;
 		if (Main::getConfig()->level_cap > 0)
 		{
 			// 0x6e = 110
@@ -52,6 +59,7 @@ void FixController::mastery_cap()
 {
 	try
 	{
+		std::cout << "======================== [Mastery Cap] ========================" << std::endl;
 		if (Main::getConfig()->mastery_cap_ch > 0)
 		{
 			// 0x14a = 330
@@ -67,9 +75,11 @@ void FixController::mastery_cap()
 				DOUBLE dblTmpMaxEuroMastery = static_cast<LDOUBLE>(pstGameServerConfig->dwMaxEuropeMasteryLevel);
 				MEMUTIL_WRITE_VALUE(LDOUBLE, 0x00B46130, dblTmpMaxEuroMastery);
 			 */
-
 			 // 00b46136
 			//Main::getMemory()->WriteNumber(0x00b46134, Main::getConfig()->mastery_cap_eu);
+			// 0x0059C56E
+			// 0059c56e 8b c8           MOV        ECX,EAX
+			//Main::getMemory()->WriteNumber(0x0059C56E + 1, Main::getConfig()->mastery_cap_eu);
 
 			//Main::getMemory()->WriteDouble(0x00B46130, Main::getConfig()->mastery_cap_eu);
 			//Main::getMemory()->WriteString(0x00B46130, Main::getConfig()->mastery_cap_eu);
@@ -87,6 +97,7 @@ void FixController::disable_fix()
 {
 	try
 	{
+		std::cout << "======================== [Fixes] ========================" << std::endl;
 		if (Main::getConfig()->fix_rates)
 		{
 			// exp
@@ -111,7 +122,7 @@ void FixController::disable_fix()
 		if (Main::getConfig()->disable_green_book)
 		{
 			// 004142e2 81 e9 22 31 00 00        SUB        ECX,0x3122
-			Main::getMemory()->WriteNumber(0x004142e2 + 2, 0x999999);
+			Main::getMemory()->WriteNumber(0x004142e2 + 2, 0x99999);
 			//Main::getMemory()->SetNop(0x004142E2, 8);
 			// 0041474d e8 ee 1e 52 00        CALL        FUN_00936640        undefined FUN_00936640(undefined
 			//Main::getMemory()->SetNop(0x0041474D, 5);
@@ -174,6 +185,8 @@ void FixController::ip()
 	{
 		if (Main::getConfig()->ip_spoof)
 		{
+			std::cout << "======================== [IP Spoof] ========================" << std::endl;
+
 			// Free memory space : 0x00ad8210
 			Main::getMemory()->WriteString(0x00ad8200, &Main::getConfig()->spoof_ip[0]);
 			// 009365b9 68 a0 02 b4 00        PUSH        s_%d.%d.%d.%d_00b402a0        = "%d.%d.%d.%d"
@@ -194,6 +207,7 @@ void FixController::gold_limits()
 {
 	try
 	{
+		std::cout << "======================== [Gold Limits] ========================" << std::endl;
 		if (Main::getConfig()->gold_limit_exchange > 0)
 		{
 			// 00480f5e 81 7c 24 20 00 ca 9a 3b       CMP        dword ptr [ESP + param_1],0x3b9aca00
@@ -207,7 +221,7 @@ void FixController::gold_limits()
 			// 004f7746 c7 44 24 10 00 ca 9a 3b       MOV        dword ptr [ESP + local_14],0x3b9aca00
 			Main::getMemory()->WriteNumber(0x004F7746 + 4, Main::getConfig()->gold_limit_exchange);
 
-			printf("[RevDll] Exchange gold limit set to: [%lu].\n", Main::getConfig()->gold_limit_exchange);
+			printf("[RevDll] Exchange gold limit set to: [%i].\n", Main::getConfig()->gold_limit_exchange);
 		}
 
 		// Static 500B limit.
@@ -227,12 +241,125 @@ void FixController::gold_limits()
 			// 0047abe3 81 f9 ff e3 0b 54       CMP        ECX,0x540be3ff
 			Main::getMemory()->WriteNumber(0x0047ABE3 + 2, 0x6A528800);
 
-			printf("[RevDll] Stall gold limit set to ! 500B STATIC !: .\n");
+			printf("[RevDll] Stall gold limit set to [500B].\n");
 		}
 	}
 	catch (const std::exception & ex)
 	{
 		printf("[RevDll] Failed to set gold limits: %s\n", ex.what());
+	}
+}
+
+void FixController::party()
+{
+	try
+	{
+		std::cout << "======================== [Party] ========================" << std::endl;
+		if (Main::getConfig()->party_monster_spawn_min_member_count > 0)
+		{
+			// 00558f20 83 7c 24 08 02       CMP        dword ptr [ESP + param_3],0x2
+			Main::getMemory()->WriteByte(0x00558f20 + 4, Main::getConfig()->party_monster_spawn_min_member_count);
+
+			printf("[RevDll] Party Monster minimum required member count set to [%i].\n", Main::getConfig()->party_monster_spawn_min_member_count);
+		}
+
+		if (Main::getConfig()->party_monster_spawn_chance > 0)
+		{
+			// 005608e2 83 fa 32        CMP        EDX,0x32
+			Main::getMemory()->WriteByte(0x005608e2 + 2, Main::getConfig()->party_monster_spawn_chance);
+			printf("[RevDll] Party Monster spawn chance set to [%i%%].\n", Main::getConfig()->party_monster_spawn_chance);
+		}
+	}
+	catch (const std::exception & ex)
+	{
+		printf("[RevDll] Failed to set Party settings: %s\n", ex.what());
+	}
+}
+
+void FixController::academy()
+{
+	try
+	{
+		std::cout << "======================== [Academy] ========================" << std::endl;
+		if (Main::getConfig()->academy_create_penalty > 0)
+		{
+			// 005dd36a b9 80 3a 09 00       MOV        ECX,0x93a80
+			Main::getMemory()->WriteNumber(0x005dd36a + 1, Main::getConfig()->academy_create_penalty);
+
+			printf("[RevDll] Academy Create Penalty set to: %d\n", Main::getConfig()->academy_create_penalty);
+		}
+
+		if (Main::getConfig()->academy_disband_penalty > 0)
+		{
+			// 00651c7a b9 80 3a 09 00       MOV        this,0x93a80
+			Main::getMemory()->WriteNumber(0x00651c7a + 1, Main::getConfig()->academy_disband_penalty);
+
+			printf("[RevDll] Academy Disband Penalty set to: %d\n", Main::getConfig()->academy_disband_penalty);
+		}
+
+		if (Main::getConfig()->academy_graduate_level > 0)
+		{
+			// 00519883 80 fa 28        CMP        DL,0x28
+			Main::getMemory()->WriteByte(0x00519883 + 2, Main::getConfig()->academy_graduate_level);
+			// 005196cd 3c 28           CMP        AL,0x28
+			Main::getMemory()->WriteByte(0x005196cd + 1, Main::getConfig()->academy_graduate_level);
+
+			printf("[RevDll] Academy Graduate Level set to: %d\n", Main::getConfig()->academy_graduate_level);
+		}
+	}
+	catch (const std::exception & ex)
+	{
+		printf("[RevDll] Failed to set party settings: %s\n", ex.what());
+	}
+}
+
+void FixController::guild()
+{
+	try
+	{
+		std::cout << "======================== [Guild] ========================" << std::endl;
+		if (Main::getConfig()->guild_union_chat_limit > 0)
+		{
+			// 005c4b42 83 7c 24 30 0c       CMP        dword ptr [ESP + local_1c],0xc
+			// TODO: Requires Client Edit Too!!
+			// 005AC538    3C 0C                CMP AL,0C --188
+			Main::getMemory()->WriteByte(0x005c4b42 + 4, Main::getConfig()->guild_union_chat_limit);
+
+			printf("[RevDll] Union Chat Player Limit set to: %i\n", Main::getConfig()->guild_union_chat_limit);
+		}
+
+		if (Main::getConfig()->guild_leaving_penalty > 0)
+		{
+			// 005c3f94 68 80 f4 03 00        PUSH       0x3f480
+			Main::getMemory()->WriteNumber(0x005c3f94 + 1, Main::getConfig()->guild_leaving_penalty);
+			// 009df194 3d 80 f4 03 00       CMP        EAX,0x3f480
+			Main::getMemory()->WriteNumber(0x009df194 + 1, Main::getConfig()->guild_leaving_penalty);
+			// 005c8b3d 68 80 f4 03 00       PUSH       0x3f480
+			Main::getMemory()->WriteNumber(0x005c8b3d + 1, Main::getConfig()->guild_leaving_penalty);
+			printf("[RevDll] Guild Leaving Penalty set to: %i\n", Main::getConfig()->guild_leaving_penalty);
+		}
+	}
+	catch (const std::exception & ex)
+	{
+		printf("[RevDll] Failed to set Guild settings: %s\n", ex.what());
+	}
+}
+
+void FixController::unique()
+{
+	try
+	{
+		std::cout << "======================== [Unique] ========================" << std::endl;
+		if (Main::getConfig()->unique_summon_skill_spawn_limit > 0)
+		{
+			// 00597734 83 fe 32        CMP        ESI,0x32
+			Main::getMemory()->WriteByte(0x00597734 + 2, Main::getConfig()->unique_summon_skill_spawn_limit);
+			printf("[RevDll] Unique Summon Skill Max Spawn Limit set to: %i\n", Main::getConfig()->unique_summon_skill_spawn_limit);
+		}
+	}
+	catch (const std::exception & ex)
+	{
+		printf("[RevDll] Failed to set Unique settings: %s\n", ex.what());
 	}
 }
 
@@ -245,12 +372,18 @@ void FixController::ctf()
 			return;
 		}
 
-		// _ctfRewardOffset
-		// 00646c93 c6 44 24 11 01       MOV        byte ptr [ESP + 0x11],0x1
-		Main::getMemory()->WriteByte(0x00646C93 + 4, Main::getConfig()->ctf_reward_count);
+		std::cout << "======================== [Capture the Flag] ========================" << std::endl;
 		// _ctfRewardItemStrOffset
 		// Free memory space : 0x00ad8220
 		Main::getMemory()->WriteString(0x00ad8220, &Main::getConfig()->ctf_reward_item[0]);
+		printf("[RevDll] CTF Item Reward set to: %s\n", &Main::getConfig()->ctf_reward_item[1]);
+
+		// _ctfRewardOffset
+		// 00646c93 c6 44 24 11 01       MOV        byte ptr [ESP + 0x11],0x1
+		// 005f1997 6a 01           PUSH       0x1
+		// 00646d40 6a 01           PUSH       0x1
+		Main::getMemory()->WriteByte(0x00646C93 + 4, Main::getConfig()->ctf_reward_count);
+		printf("[RevDll] CTF Item Reward count set to: %d\n", Main::getConfig()->ctf_reward_count);
 
 		// _ctfRewardItemPushOffset_1-2-3
 		// 00646d42 68 30 ff af 00       PUSH       s_ITEM_ETC_E080723_ICETROPHY_00afff30            = "ITEM_ETC_E080723_ICETROPHY"
@@ -288,34 +421,40 @@ void FixController::arena_rewards()
 {
 	try
 	{
+		std::cout << "======================== [Battle Arena] ========================" << std::endl;
+		// Free memory space : 0x00ad8240
+		Main::getMemory()->WriteString(0x00ad8240, &Main::getConfig()->battle_arena_reward_item[0]);
+		printf("[RevDll] Random Party Arena Reward Item set to: %s\n", &Main::getConfig()->battle_arena_reward_item[0]);
+		// 006691c6 68 9c 59 af 00       PUSH       s_ITEM_ETC_ARENA_COIN_00af599c                   = "ITEM_ETC_ARENA_COIN"
+		Main::getMemory()->WriteNumber(0x006691C6 + 1, 0x00ad8240);
+
 		if (Main::getConfig()->guild_arena_win_reward_item_count > 0)
 		{
 			// 00669158 c6 44 24 16 07       MOV        byte ptr [ESP + 0x16],0x7
 			Main::getMemory()->WriteByte(0x00669158 + 4, Main::getConfig()->guild_arena_win_reward_item_count);
+			printf("[RevDll] Guild Arena Win reward count set to: %d\n", Main::getConfig()->guild_arena_win_reward_item_count);
 		}
 
 		if (Main::getConfig()->guild_arena_lose_reward_item_count > 0)
 		{
 			// 00669173 c6 44 24 16 02       MOV        byte ptr [ESP + 0x16],0x2
 			Main::getMemory()->WriteByte(0x00669173 + 4, Main::getConfig()->guild_arena_lose_reward_item_count);
+			printf("[RevDll] Guild Arena Lose reward count set to: %d\n", Main::getConfig()->guild_arena_lose_reward_item_count);
 		}
 
 		if (Main::getConfig()->random_party_arena_win_reward_item_count > 0)
 		{
 			// 0066915f c6 44 24 16 05       MOV        byte ptr [ESP + 0x16],0x5
 			Main::getMemory()->WriteByte(0x0066915F + 4, Main::getConfig()->random_party_arena_win_reward_item_count);
+			printf("[RevDll] Random Party Arena Win reward count set to: %d\n", Main::getConfig()->random_party_arena_win_reward_item_count);
 		}
 
 		if (Main::getConfig()->random_party_arena_lose_reward_item_count > 0)
 		{
 			// 0066917a c6 44 24 16 01       MOV        byte ptr [ESP + 0x16],0x1
 			Main::getMemory()->WriteByte(0x0066917A + 4, Main::getConfig()->random_party_arena_lose_reward_item_count);
+			printf("[RevDll] Random Party Arena Lose reward count set to: %d\n", Main::getConfig()->random_party_arena_lose_reward_item_count);
 		}
-
-		// Free memory space : 0x00ad8240
-		Main::getMemory()->WriteString(0x00ad8240, &Main::getConfig()->battle_arena_reward_item[0]);
-		// 006691c6 68 9c 59 af 00       PUSH       s_ITEM_ETC_ARENA_COIN_00af599c                   = "ITEM_ETC_ARENA_COIN"
-		Main::getMemory()->WriteNumber(0x006691C6 + 1, 0x00ad8240);
 
 		// _pArenaRewardParamOffsets 1-8
 		// 006691a7 6a 00           PUSH       0x0
@@ -345,12 +484,33 @@ void FixController::job()
 {
 	try
 	{
-		// 0060e126 81 ff 00 94 35 77       CMP        EDI,0x77359400
-		Main::getMemory()->WriteNumber(0x0060E126 + 2, Main::getConfig()->job_mgr_clamp_limit);
-		// 0060e182 81 f9 00 94 35 77       CMP        ECX,0x77359400
-		Main::getMemory()->WriteNumber(0x0060E182 + 2, Main::getConfig()->job_mgr_clamp_limit);
-		// 0060e18a b9 00 94 35 77       MOV        ECX,0x77359400
-		Main::getMemory()->WriteNumber(0x0060E18A + 1, Main::getConfig()->job_mgr_clamp_limit);
+		std::cout << "======================== [Job] ========================" << std::endl;
+
+		if (Main::getConfig()->job_mgr_clamp_limit > 0)
+		{
+			// 0060e126 81 ff 00 94 35 77       CMP        EDI,0x77359400
+			Main::getMemory()->WriteNumber(0x0060E126 + 2, Main::getConfig()->job_mgr_clamp_limit);
+			// 0060e182 81 f9 00 94 35 77       CMP        ECX,0x77359400
+			Main::getMemory()->WriteNumber(0x0060E182 + 2, Main::getConfig()->job_mgr_clamp_limit);
+			// 0060e18a b9 00 94 35 77       MOV        ECX,0x77359400
+			Main::getMemory()->WriteNumber(0x0060E18A + 1, Main::getConfig()->job_mgr_clamp_limit);
+
+			printf("[RevDll] Job Manager Clamp Limit set to: %i\n", Main::getConfig()->job_mgr_clamp_limit);
+		}
+
+		if (Main::getConfig()->job_level_cap > 0)
+		{
+			// 0060de69 66 83 fb 07     CMP        BX,0x7
+			Main::getMemory()->WriteByte(0x0060de69 + 3, Main::getConfig()->job_level_cap);
+			printf("[RevDll] Job Level Cap set to: %i\n", Main::getConfig()->job_level_cap);
+		}
+
+		if (Main::getConfig()->job_leaving_penalty > 0)
+		{
+			// 004e816c 68 80 3a 09 00        PUSH       0x93a80
+			Main::getMemory()->WriteNumber(0x004e816c, Main::getConfig()->job_leaving_penalty);
+			printf("[RevDll] Job Leaving Penalty set to: %i\n", Main::getConfig()->job_leaving_penalty);
+		}
 	}
 	catch (const std::exception & ex)
 	{

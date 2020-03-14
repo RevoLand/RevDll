@@ -29,12 +29,25 @@ ConfigController::ConfigController()
 	ip_spoof = reader.GetBoolean("ip", "spoof", true);
 	spoof_ip = reader.Get("ip", "ip", "127.0.0.1");
 
-	// Job
-	job_mgr_clamp_limit = reader.GetInteger("job", "manager_clamp_limit", 2134217728);
-
 	// Gold Limits
 	gold_limit_exchange = reader.GetInteger("gold_limits", "exchange", 1000000000);
 	gold_limit_stall = reader.GetInteger("gold_limits", "stall", INT_MAX);
+
+	// Party
+	party_monster_spawn_min_member_count = reader.GetInteger("party", "monster_spawn_min_member_count", 2);
+	party_monster_spawn_chance = reader.GetInteger("party", "monster_spawn_chance", 50);
+
+	// Academy
+	academy_create_penalty = reader.GetInteger("academy", "create_penalty_seconds", 604800);
+	academy_disband_penalty = reader.GetInteger("academy", "disband_penalty_seconds", 604800);
+	academy_graduate_level = reader.GetInteger("academy", "graduate_level", 40);
+
+	// Guild
+	guild_union_chat_limit = reader.GetInteger("guild", "union_chat_limit", 12);
+	guild_leaving_penalty = reader.GetInteger("guild", "leaving_penalty", 604800);
+
+	// Unique
+	unique_summon_skill_spawn_limit = reader.GetInteger("unique", "summon_skill_spawn_limit", 50);
 
 	// Capture the Flag
 	ctf_reward_item = reader.Get("ctf", "reward_item", "ITEM_ETC_ARENA_COIN");
@@ -62,4 +75,9 @@ ConfigController::ConfigController()
 	arena_reward_param6 = reader.GetInteger("arena_rewards", "reward_item_param6", 0);
 	arena_reward_param7 = reader.GetInteger("arena_rewards", "reward_item_param7", 0);
 	arena_reward_param8 = reader.GetInteger("arena_rewards", "reward_item_param8", 1);
+
+	// Job
+	job_mgr_clamp_limit = reader.GetInteger("job", "manager_clamp_limit", 2134217728);
+	job_level_cap = reader.GetInteger("job", "level_cap", 7);
+	job_leaving_penalty = reader.GetInteger("job", "leaving_penalty", 604800);
 }

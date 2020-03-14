@@ -10,6 +10,7 @@ DWORD on_unique_kill = 0x00936640;
 
 void UniqueController::initialize()
 {
+	std::cout << "======================== [Unique Controller] ========================" << std::endl;
 	// Unique Monster Entered!
 	CALLFunction(0x00414db0, DWORD(on_enter_message));
 
@@ -18,6 +19,7 @@ void UniqueController::initialize()
 
 	// Console
 	std::cout << "[RevDll] UniqueController hooked.\n";
+	std::cout << "======================== [Unique Controller] ========================" << std::endl;
 }
 
 // FUN_00936640(0x2000001, "Unique Monster Killed! UNIQUE[%s] by [%s]");

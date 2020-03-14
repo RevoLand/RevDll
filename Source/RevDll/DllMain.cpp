@@ -52,12 +52,23 @@ void initialize()
 void console()
 {
 	std::cout << "[RevDll] Type your command.\n";
-	std::string input;
-	std::cin >> input;
+	std::string user_input;
+	int user_input_int;
+	std::cin >> user_input;
 
-	if (input == "exit")
+	if (user_input == "exit")
 	{
 		std::cout << "[RevDll] COMMAND FOUND!\n";
+	}
+
+	if (user_input == "party_monster_min_player")
+	{
+		std::cout << "[RevDll] The current minimum required player count to spawn a party monster is: " << Main::getConfig()->party_monster_spawn_min_member_count << std::endl;
+		std::cout << "Please input a new setting:";
+		std::cin >> user_input_int;
+		Main::getConfig()->party_monster_spawn_min_member_count = user_input_int;
+		FixController::party();
+		//std::cout << "[RevDll] Minimum required player count to spawn a party monster is set to: " << Main::getConfig()->party_monster_spawn_min_member_count << " now." <<std::endl;
 	}
 
 	console();
