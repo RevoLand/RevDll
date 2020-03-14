@@ -246,23 +246,36 @@ void FixController::ctf()
 		}
 
 		// _ctfRewardOffset
+		// 00646c93 c6 44 24 11 01       MOV        byte ptr [ESP + 0x11],0x1
 		Main::getMemory()->WriteByte(0x00646C93 + 4, Main::getConfig()->ctf_reward_count);
 		// _ctfRewardItemStrOffset
-		Main::getMemory()->WriteString(0x00AD8FC0, &Main::getConfig()->ctf_reward_item[0]);
+		// Free memory space : 0x00ad8220
+		Main::getMemory()->WriteString(0x00ad8220, &Main::getConfig()->ctf_reward_item[0]);
 
 		// _ctfRewardItemPushOffset_1-2-3
-		Main::getMemory()->WriteNumber(0x00646D42 + 1, 0x00AD8FC0);
-		Main::getMemory()->WriteNumber(0x005F19A9 + 1, 0x00AD8FC0);
-		Main::getMemory()->WriteNumber(0x00876935 + 6, 0x00AD8FC0);
+		// 00646d42 68 30 ff af 00       PUSH       s_ITEM_ETC_E080723_ICETROPHY_00afff30            = "ITEM_ETC_E080723_ICETROPHY"
+		Main::getMemory()->WriteNumber(0x00646D42 + 1, 0x00ad8220);
+		// 005f19a9 68 30 ff af 00       PUSH       s_ITEM_ETC_E080723_ICETROPHY_00afff30            = "ITEM_ETC_E080723_ICETROPHY"
+		Main::getMemory()->WriteNumber(0x005F19A9 + 1, 0x00ad8220);
+		// 00876935 c7 86 00 08 00 00 30 ff af 00       MOV        dword ptr [ESI + 0x800],s_ITEM_ETC_E080723_ICE   = "ITEM_ETC_E080723_ICETROPHY"
+		Main::getMemory()->WriteNumber(0x00876935 + 6, 0x00ad8220);
 
 		// _pCtfRewardParamOffsets 1-8
+		// 00646d25 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x00646D25 + 1, Main::getConfig()->ctf_reward_param1);
+		// 00646d2d 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x00646D2D + 1, Main::getConfig()->ctf_reward_param2);
+		// 00646d2f 6a 01           PUSH       0x1
 		Main::getMemory()->WriteByte(0x00646D2F + 1, Main::getConfig()->ctf_reward_param3);
+		// 00646d31 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x00646D31 + 1, Main::getConfig()->ctf_reward_param4);
+		// 00646d33 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x00646D33 + 1, Main::getConfig()->ctf_reward_param5);
+		// 00646d35 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x00646D35 + 1, Main::getConfig()->ctf_reward_param6);
+		// 00646d37 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x00646D37 + 1, Main::getConfig()->ctf_reward_param7);
+		// 00646d39 6a 01           PUSH       0x1
 		Main::getMemory()->WriteByte(0x00646D39 + 1, Main::getConfig()->ctf_reward_param8);
 	}
 	catch (const std::exception & ex)
@@ -277,35 +290,49 @@ void FixController::arena_rewards()
 	{
 		if (Main::getConfig()->guild_arena_win_reward_item_count > 0)
 		{
+			// 00669158 c6 44 24 16 07       MOV        byte ptr [ESP + 0x16],0x7
 			Main::getMemory()->WriteByte(0x00669158 + 4, Main::getConfig()->guild_arena_win_reward_item_count);
 		}
 
 		if (Main::getConfig()->guild_arena_lose_reward_item_count > 0)
 		{
+			// 00669173 c6 44 24 16 02       MOV        byte ptr [ESP + 0x16],0x2
 			Main::getMemory()->WriteByte(0x00669173 + 4, Main::getConfig()->guild_arena_lose_reward_item_count);
 		}
 
 		if (Main::getConfig()->random_party_arena_win_reward_item_count > 0)
 		{
+			// 0066915f c6 44 24 16 05       MOV        byte ptr [ESP + 0x16],0x5
 			Main::getMemory()->WriteByte(0x0066915F + 4, Main::getConfig()->random_party_arena_win_reward_item_count);
 		}
 
 		if (Main::getConfig()->random_party_arena_lose_reward_item_count > 0)
 		{
+			// 0066917a c6 44 24 16 01       MOV        byte ptr [ESP + 0x16],0x1
 			Main::getMemory()->WriteByte(0x0066917A + 4, Main::getConfig()->random_party_arena_lose_reward_item_count);
 		}
 
-		Main::getMemory()->WriteString(0x00AD8F49, &Main::getConfig()->battle_arena_reward_item[0]);
-		Main::getMemory()->WriteNumber(0x006691C6 + 1, 0x00AD8F49);
+		// Free memory space : 0x00ad8240
+		Main::getMemory()->WriteString(0x00ad8240, &Main::getConfig()->battle_arena_reward_item[0]);
+		// 006691c6 68 9c 59 af 00       PUSH       s_ITEM_ETC_ARENA_COIN_00af599c                   = "ITEM_ETC_ARENA_COIN"
+		Main::getMemory()->WriteNumber(0x006691C6 + 1, 0x00ad8240);
 
 		// _pArenaRewardParamOffsets 1-8
+		// 006691a7 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x006691A7 + 1, Main::getConfig()->arena_reward_param1);
+		// 006691af 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x006691AF + 1, Main::getConfig()->arena_reward_param2);
+		// 006691b1 6a 01           PUSH       0x1
 		Main::getMemory()->WriteByte(0x006691B1 + 1, Main::getConfig()->arena_reward_param3);
+		// 006691b3 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x006691B3 + 1, Main::getConfig()->arena_reward_param4);
+		// 006691b5 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x006691B5 + 1, Main::getConfig()->arena_reward_param5);
+		// 006691b7 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x006691B7 + 1, Main::getConfig()->arena_reward_param6);
+		// 006691b9 6a 00           PUSH       0x0
 		Main::getMemory()->WriteByte(0x006691B9 + 1, Main::getConfig()->arena_reward_param7);
+		// 006691bb 6a 01           PUSH       0x1
 		Main::getMemory()->WriteByte(0x006691BB + 1, Main::getConfig()->arena_reward_param8);
 	}
 	catch (const std::exception & ex)
