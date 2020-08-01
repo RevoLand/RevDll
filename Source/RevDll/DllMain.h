@@ -9,7 +9,7 @@
 void initialize();
 void console();
 
-class Main
+class main
 {
 public:
 	static sql* getConnection();

@@ -85,6 +85,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ChatController.cpp" />
     <ClCompile Include="ConfigController.cpp" />
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="FixController.cpp" />
@@ -95,6 +96,7 @@
     <ClCompile Include="UniqueController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ChatController.h" />
     <ClInclude Include="ConfigController.h" />
     <ClInclude Include="DllMain.h" />
     <ClInclude Include="FixController.h" />

@@ -89,11 +89,24 @@ void memory::SetRetnVal(DWORD dwOffset, byte nValue)
 	WriteProcessMemory(this->cur_process, (LPVOID)dwOffset, &buf, size, nullptr);
 }
 
+void memory::SetCmp(DWORD dwOffset, byte nValue)
+{
+	byte buf[] = { 0x82, 0xF8, nValue };
+	int size = sizeof(buf) / sizeof(buf[0]);
+	WriteProcessMemory(this->cur_process, (LPVOID)dwOffset, &buf, size, nullptr);
+}
+
 void memory::SetJnz(DWORD dwOffset, DWORD dwAddress)
 {
 	byte jnzInstruction[] = { 0x0F, 0x85 };
 	WriteProcessMemory(this->cur_process, (LPVOID)dwOffset, &jnzInstruction, 2, nullptr);
 	WriteProcessMemory(this->cur_process, (LPVOID)(dwOffset + 2), &dwAddress, sizeof(DWORD), nullptr);
+}
+
+void memory::SetJge(DWORD dwOffset)
+{
+	byte instruction[] = { 0x7D };
+	WriteProcessMemory(this->cur_process, (LPVOID)dwOffset, &instruction, 1, nullptr);
 }
 
 void memory::SetJmp(DWORD dwOffset, DWORD dwAddress)

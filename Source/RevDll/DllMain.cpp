@@ -4,6 +4,7 @@
 #include <string>
 #include <windows.h>
 
+#include "ChatController.h"
 #include "FixController.h"
 #include "sql.h"
 #include "UniqueController.h"
@@ -28,14 +29,17 @@ DLLEXPORT BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserv
 	freopen("CONOUT$", "w", stderr);
 	std::cout << "[RevDll] Initializing - v0.1\n";
 
-	// Start sql connection & create console thread
-	CreateThread(nullptr, NULL, LPTHREAD_START_ROUTINE(initialize), nullptr, NULL, nullptr);
-
 	// Init fixes
 	FixController::initialize();
 
 	// Init unique controller
 	UniqueController::initialize();
+
+	// Init chat controller
+	ChatController::initialize();
+
+	// Start sql connection & create console thread
+	CreateThread(nullptr, NULL, LPTHREAD_START_ROUTINE(initialize), nullptr, NULL, nullptr);
 	return true;
 }
 
@@ -63,10 +67,10 @@ void console()
 
 	if (user_input == "party_monster_min_player")
 	{
-		std::cout << "[RevDll] The current minimum required player count to spawn a party monster is: " << Main::getConfig()->party_monster_spawn_min_member_count << std::endl;
+		std::cout << "[RevDll] The current minimum required player count to spawn a party monster is: " << main::getConfig()->party_monster_spawn_min_member_count << std::endl;
 		std::cout << "Please input a new setting:";
 		std::cin >> user_input_int;
-		Main::getConfig()->party_monster_spawn_min_member_count = user_input_int;
+		main::getConfig()->party_monster_spawn_min_member_count = user_input_int;
 		FixController::party();
 		//std::cout << "[RevDll] Minimum required player count to spawn a party monster is set to: " << Main::getConfig()->party_monster_spawn_min_member_count << " now." <<std::endl;
 	}
@@ -74,17 +78,17 @@ void console()
 	console();
 }
 
-sql* Main::getConnection()
+sql* main::getConnection()
 {
 	return sql_connection;
 }
 
-ConfigController* Main::getConfig()
+ConfigController* main::getConfig()
 {
 	return configs;
 }
 
-memory* Main::getMemory()
+memory* main::getMemory()
 {
 	return memory_helper;
 }

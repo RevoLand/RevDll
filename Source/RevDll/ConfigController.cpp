@@ -20,10 +20,14 @@ ConfigController::ConfigController()
 
 	// Disable & Fixes
 	fix_rates = reader.GetBoolean("disable_fix", "fix_rates", true);
+	null_instance_fix = reader.GetBoolean("disable_fix", "null_instance_fix", true);
 	disable_dumps = reader.GetBoolean("disable_fix", "disable_dumps", true);
 	disable_green_book = reader.GetBoolean("disable_fix", "disable_green_book", true);
 	disable_messages = reader.GetBoolean("disable_fix", "disable_messages", false);
 	disable_logs = reader.GetBoolean("disable_fix", "disable_logs", false);
+	
+	disable_npc_register_gold_price_error = reader.GetBoolean("disable_fix", "npc_register_gold_price_error", true);
+	disable_npc_register_silk_price_error = reader.GetBoolean("disable_fix", "npc_register_silk_price_error", true);
 
 	// IP Spoofing
 	ip_spoof = reader.GetBoolean("ip", "spoof", true);
@@ -62,19 +66,19 @@ ConfigController::ConfigController()
 	ctf_reward_param8 = reader.GetInteger("ctf", "reward_item_param8", 1);
 
 	// Battle Arena
-	battle_arena_reward_item = reader.Get("arena_rewards", "reward_item", "ITEM_ETC_ARENA_COIN");
-	guild_arena_win_reward_item_count = reader.GetInteger("arena_rewards", "guild_win_reward_item_count", 7);
-	guild_arena_lose_reward_item_count = reader.GetInteger("arena_rewards", "guild_lose_reward_item_count", 2);
-	random_party_arena_win_reward_item_count = reader.GetInteger("arena_rewards", "party_win_reward_item_count", 7);
-	random_party_arena_lose_reward_item_count = reader.GetInteger("arena_rewards", "party_lose_reward_item_count", 2);
-	arena_reward_param1 = reader.GetInteger("arena_rewards", "reward_item_param1", 0);
-	arena_reward_param2 = reader.GetInteger("arena_rewards", "reward_item_param2", 0);
-	arena_reward_param3 = reader.GetInteger("arena_rewards", "reward_item_param3", 1);
-	arena_reward_param4 = reader.GetInteger("arena_rewards", "reward_item_param4", 0);
-	arena_reward_param5 = reader.GetInteger("arena_rewards", "reward_item_param5", 0);
-	arena_reward_param6 = reader.GetInteger("arena_rewards", "reward_item_param6", 0);
-	arena_reward_param7 = reader.GetInteger("arena_rewards", "reward_item_param7", 0);
-	arena_reward_param8 = reader.GetInteger("arena_rewards", "reward_item_param8", 1);
+	battle_arena_reward_item = reader.Get("battle_arena", "reward_item", "ITEM_ETC_ARENA_COIN");
+	guild_arena_win_reward_item_count = reader.GetInteger("battle_arena", "guild_win_reward_item_count", 7);
+	guild_arena_lose_reward_item_count = reader.GetInteger("battle_arena", "guild_lose_reward_item_count", 2);
+	random_party_arena_win_reward_item_count = reader.GetInteger("battle_arena", "party_win_reward_item_count", 7);
+	random_party_arena_lose_reward_item_count = reader.GetInteger("battle_arena", "party_lose_reward_item_count", 2);
+	arena_reward_param1 = reader.GetInteger("battle_arena", "reward_item_param1", 0);
+	arena_reward_param2 = reader.GetInteger("battle_arena", "reward_item_param2", 0);
+	arena_reward_param3 = reader.GetInteger("battle_arena", "reward_item_param3", 1);
+	arena_reward_param4 = reader.GetInteger("battle_arena", "reward_item_param4", 0);
+	arena_reward_param5 = reader.GetInteger("battle_arena", "reward_item_param5", 0);
+	arena_reward_param6 = reader.GetInteger("battle_arena", "reward_item_param6", 0);
+	arena_reward_param7 = reader.GetInteger("battle_arena", "reward_item_param7", 0);
+	arena_reward_param8 = reader.GetInteger("battle_arena", "reward_item_param8", 1);
 
 	// Job
 	job_mgr_clamp_limit = reader.GetInteger("job", "manager_clamp_limit", 2134217728);

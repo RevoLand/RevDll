@@ -15,7 +15,9 @@ public:
 	void SetNop(DWORD d_offset, int nLength);
 	void SetRetn(DWORD d_offset);
 	void SetRetnVal(DWORD d_offset, byte nValue);
+	void SetCmp(DWORD dwOffset, byte nValue);
 	void SetJnz(DWORD dwOffset, DWORD dwAddress);
+	void SetJge(DWORD dwOffset);
 	void SetJmp(DWORD dwOffset, DWORD dwAddress);
 
 private:

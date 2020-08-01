@@ -15,7 +15,9 @@ public:
 
 	// Disable & Fixes
 	bool disable_dumps, disable_green_book, disable_messages, disable_logs;
-	bool fix_rates;
+	bool fix_rates, null_instance_fix;
+
+	bool disable_npc_register_gold_price_error, disable_npc_register_silk_price_error;
 
 	// IP Spoof
 	bool ip_spoof;
